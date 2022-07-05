@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
+  </head>
+  <body>
+  <input type="checkbox" id="click" src="/static/sendbutton.png">
+  <label  for="click">
+	<i class="material-icons"> comment </i>
+  </label>
+ 
+  <div class="header">   
+  
+  
+ 
+  </div> 
+<div class="wrapper">  
+
+    <div id="maindiv">
+       <div class="chatheader">
+                 <span>
+                 <img src="/static/logo.png" style="height: 3.5em;margin-left: 10%;margin-top: 8px;width: 300px;">
+                 <label  for="click" onclick="refresh()">
+               	<img src="/static/close_button.png" > 
+                 </label>
+                 </span>
+                 </div>
+       
+      <div id="chatbox">
+        <p class="botText"><span><img src = "/static/robo.jpg" >Hi! Ask me a query regarding VermiGold product</span></p>
+      </div>
+      <div id="userInput">
+        <input id="textInput" type="text" name="msg" placeholder="Message">
+     
+        <input id="buttonInput" type="image" src="/static/sendbutton.png" alt="Submit">
+      </div>
+
+       
+      <input id="buttonvalue" type="text" name="button" value="" hidden>
+
+      <script>
+      
+      $(document).on('click','.bot_new', function(){
+        // alert("I'm in click")
+        // alert($(this).val())
+          var b_val = $(this).val()
+<!--          $("#buttonvalue").val(values);-->
+<!--          var buttonval = $("#buttonvalue").val();-->
+          $('#buttonvalue').attr('value', b_val);
+          getBotResponse();
+
+        })
+      
+      
+        function refresh() {
+      window.location.reload(1);
+    }
+      
+        var foo = '';
+        var foo2 = '';
+        var foo3 = '';
+        var foo4 = '';
+        var foo5 = '';
+        var foo6 = '';
+        var foo7 = '';
+        var foo8 = '';
+        function getBotResponse() {
+
+          if ( $("#buttonvalue").val() != '' ) {
+            var rawText = $("#buttonvalue").val();
+            $('#buttonvalue').attr('value', '');
+        }else{
+        var rawText = $("#textInput").val();
+         if((rawText=='Quit')||(rawText=='quit'))
+        {
+            $('label i.fas').css("display","none");
+            
+        }
+        }
+
+<!-- var rawText = $("#textInput").val();-->
+          // alert(rawText+"i am fuck up")
+          var userHtml = '<p class="userText" id="userText"><span><img src = "/static/user.png" >' + rawText + '</span></p>';
+          // alert("foo"+foo)
+          if (foo == true){
+            // alert("foo"+true)
+            foo = false;
+            rawText = rawText + "_name_";
+          }
+          if (foo2 == true){
+            // alert("foo2"+true)
+            foo2 = false;
+            rawText = rawText + "_email_";
+          }
+          if (foo3 == true){
+            // alert("foo2"+true)
+            foo3 = false;
+            rawText = rawText + "_phone_";
+          }
+          if (foo4 == true){
+            foo4 = false;
+            rawText = rawText + "_query_";
+          }
+          
+           if (foo5 == true){
+             foo5 = false;
+             rawText = rawText + "_appointmentname_";
+           }
+           
+            if (foo6 == true){
+              foo6 = false;
+              rawText = rawText + "_contactdetails_";
+            }
+           
+            if (foo7 == true){
+              foo7 = false;
+              rawText = rawText + "_date_";
+
+            }
+            if (foo8 == true){
+              foo8 = false;
+              rawText = rawText + "_time_";
+            }
+            
+          
+          // var name = rawText + "_name_"
+          
+          $("#textInput").val("");
+          $("#chatbox").append(userHtml);
+          document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          
+          $.get("/get", { msg: rawText }).done(function(data) {
+            var botHtml = '<p class="botText"><span><img src = "/static/robo.jpg" >' + data + '</span></p>';
+            // $("#chatbox").append(botHtml);
+            foo = data;
+            
+            
+            if(data.startsWith("Book your Appointment")){
+            
+                $("#chatbox").append('<div class= "calender" id= "date"><input class ="calender" type="date" id="datepicker" name="trip-start" value="" placeholder="Select date" min="2022-01-01" max="3000-12-31"> </div>')
+              }
+              
+              if(data.startsWith("Currently Appointment date for")){
+            $("#chatbox").append('<div class= "calender" id= "date1"><input class ="calender" type="date" id="datepicker1" name="trip-start" value="" placeholder="Select date" min="2022-01-01" max="3000-12-31"> </div>')
+             }
+              
+           
+ 
+         
+
+             
+            var incStr = data.includes("$"); 
+            //////////if start 
+            if (incStr == true) {
+              var first_split = data.split("$");
+              var botHtml = '<p class="botText"><span><img src = "/static/robo.jpg" >' + first_split[0] + '</span></p>';
+              $("#chatbox").append(botHtml);
+              var myArray = first_split[first_split.length-1]
+              var myArray = myArray.split(",");
+            for(var i = 0; i < myArray.length; i++)//see that I removed the $ preceeding the `for` keyword, it should 
+            {
+              
+              console.log(myArray[i])
+              //alert(myArray[i].startsWith("https"));
+              if (myArray[i].startsWith("https")) {
+                   // do this if begins with Hello
+                  
+                  $("#chatbox").append('<div class= link><a href="'+ myArray[i] + '" target="_blank" style = "color: #202022; font-weight: 900;" >' + myArray[i] + '</a></div>');
+                  
+            }
+            
+            if(data.startsWith("Please select Time slot ")){
+                 var something = $('<input/>').attr({ type: 'button', name: myArray[i], value: myArray[i], class:'bot_new',id:'bot-'+[i]});
+                 $("#chatbox").append(something);
+            }
+            else{
+                
+                var something = $('<input/>').attr({ type: 'button', name: myArray[i], value: myArray[i], class:'bot',id:'bot-'+[i]});
+                $("#chatbox").append(something);
+                }
+            } 
+             
+            }
+            
+            ///////////// if end and else start
+            else{
+                     var incStr_http = data.includes("[https]");
+                     if (incStr_http == true){
+                      // alert("papa"+true)
+                     }
+
+                     $("#chatbox").append(botHtml);
+                 };
+
+
+
+            document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+          ////////////////////
+          
+
+          if (data.includes("Name")){
+           if (data.includes("Appointment Name"))
+           {
+               foo5 = true;
+           }
+           else{
+               foo = true;
+           }
+          }
+
+          //email id capture session
+          var incStr_email = data.includes("Email");
+          if (incStr_email == true){
+             foo2 = true;
+          }
+          /////////////
+          var incStr_contact = data.includes("Phone");
+          if (incStr_contact == true){
+             foo3 = true;
+          }
+          /////////////
+          var incStr_query = data.includes("Query");
+          if (incStr_query == true){
+             foo4 = true;
+          }
+          
+          var incStr_query = data.includes("Contact Details");
+          if (incStr_query == true){
+             foo6 = true;
+          }
+          var incStr_timeSlot = data.includes("Time");
+          if (incStr_timeSlot == true){
+             foo8 = true;
+          }
+
+          });
+
+        }
+        $("#textInput").keypress(function(e) {
+            if(e.which == 13) {
+                getBotResponse();
+                console.log("Input accepted")
+            }
+        });
+        
+        $("#buttonInput").click(function() {
+          getBotResponse();
+        });
+        
+        $(document).on('change','#date', function(){  
+           var date_val = $("#datepicker").val();
+           $('#buttonvalue').attr('value', date_val); 
+           foo7 = true;
+           getBotResponse();
+          });
+          
+          
+          $(document).on('change','#date1', function(){  
+            var date_val_1 = $("#datepicker1").val();
+            alert(date_val_1)
+             $('#buttonvalue').attr('value', date_val_1); 
+             foo7 = true;
+             getBotResponse();            
+           });
+         
+         
+         
+          
+
+        $(document).on('click','.bot', function(){
+        // alert("I'm in click")                             <!--by clicking user response -->
+        // alert($(this).val())
+          var b_val = $(this).val()
+<!--          $("#buttonvalue").val(values);-->
+<!--          var buttonval = $("#buttonvalue").val();-->
+          $('#buttonvalue').attr('value', b_val);
+          getBotResponse();
+
+        })
+
+		// function MyFunction(docurl) {
+		//  $.ajax({
+  //           url: '/opendoc',
+  //           data: {doc:docurl},
+  //           type: 'POST',
+  //           success: function(response) {
+  //               console.log(response);
+  //           },
+  //           error: function(error) {
+  //               console.log(error);
+  //           }
+  //       });
+	 
+		// }
+		
+		
+		
+		
+		
+		
+	
+		
+		
+      </script>
+    </div>
+	</div>
+	
+  </body>
+</html>
